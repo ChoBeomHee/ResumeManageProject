@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .login-box {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .login-box h2 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+        .login-box p {
+            font-size: 18px;
+            color: #555;
+        }
+        .kakao-login-btn {
+            display: inline-block;
+            background-color: #F7E200;
+            color: #3C1D1D;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .kakao-login-btn:hover {
+            background-color: #F0C400;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="login-box">
+        <h2>Welcome!</h2>
+        <p>카카오로 로그인하세요!</p>
+        <!-- 카카오 로그인 버튼 -->
+        <a href="https://accounts.kakao.com/login/?continue=https%3A%2F%2Fkauth.kakao.com%2Foauth%2Fauthorize%3Fresponse_type%3Dcode%26client_id%3D9fe6e0ee364495b0f1ec8dd4da3260d5%26redirect_uri%3Dhttp%253A%252F%252Flocalhost%253A8080%252Fauth%252Fkakao%252Fcallback%26through_account%3Dtrue#login" class="kakao-login-btn">
+            카카오 로그인
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>회사 등록</title>
+    <meta charset="UTF-8">
+    <script>
+        async function submitForm(event) {
+            event.preventDefault(); // 폼의 기본 제출 방지
+
+            const companyName = document.getElementById("name").value;
+
+            try {
+                const response = await fetch('/api/company', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: companyName })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("message").textContent = "회사가 성공적으로 등록되었습니다.";
+                } else {
+                    document.getElementById("message").textContent = result.message || "등록 중 오류가 발생했습니다.";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>회사 이름 등록</h1>
+<form onsubmit="submitForm(event)">
+    <label for="name">회사 이름:</label>
+    <input type="text" id="name" name="name" required>
+    <button type="submit">등록</button>
+</form>
+
+<p id="message" th:if="${message}" th:text="${message}"></p>
+</body>
+</html>

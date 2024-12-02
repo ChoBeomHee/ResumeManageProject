@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>자소서 등록</title>
+    <meta charset="UTF-8">
+    <script>
+        let index = 1; // 추가된 폼의 인덱스 관리
+
+        // URL에서 companyName 파라미터를 가져오는 함수
+        function getCompanyNameFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("companyName");
+        }
+
+        // 새로운 폼을 추가하는 함수
+        function addForm() {
+            const container = document.getElementById("formsContainer");
+
+            const formGroup = document.createElement("div");
+            formGroup.setAttribute("class", "form-group");
+            formGroup.setAttribute("id", `formGroup-${index}`);
+
+            formGroup.innerHTML = `
+                <label for="title-${index}">자소서 항목:</label>
+                <input type="text" id="title-${index}" name="title-${index}" required><br><br>
+
+                <label for="contents-${index}">자소서 내용:</label><br>
+                <textarea id="contents-${index}" name="contents-${index}" rows="4" cols="50" required></textarea><br><br>
+                <button type="button" onclick="removeForm(${index})">삭제</button>
+                <hr>
+            `;
+
+            container.appendChild(formGroup);
+            index++;
+        }
+
+        // 특정 폼을 삭제하는 함수
+        function removeForm(id) {
+            const formGroup = document.getElementById(`formGroup-${id}`);
+            if (formGroup) {
+                formGroup.remove();
+            }
+        }
+
+        // 전체 데이터를 POST 요청으로 전송하는 함수
+        async function submitForm(event) {
+            event.preventDefault(); // 기본 폼 제출 동작 방지
+
+            const companyName = getCompanyNameFromURL(); // URL에서 회사 이름 가져오기
+            if (!companyName) {
+                document.getElementById("message").textContent = "회사 이름이 URL에 없습니다. URL을 확인하세요.";
+                return;
+            }
+
+            const formsContainer = document.getElementById("formsContainer");
+            const formGroups = formsContainer.getElementsByClassName("form-group");
+
+            const resumes = [];
+            for (let formGroup of formGroups) {
+                const title = formGroup.querySelector(`[id^="title-"]`).value;
+                const contents = formGroup.querySelector(`[id^="contents-"]`).value;
+                resumes.push({ title, contents });
+            }
+
+            try {
+                const response = await fetch('/api/resume', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ companyName, resumes })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("message").textContent = "자소서가 성공적으로 등록되었습니다.";
+                } else {
+                    document.getElementById("message").textContent = result.message || "등록 중 오류가 발생했습니다.";
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>자소서 등록</h1>
+<form onsubmit="submitForm(event)">
+    <div id="formsContainer"></div> <!-- 동적으로 추가될 폼 컨테이너 -->
+
+    <button type="button" onclick="addForm()">+ 항목 추가</button><br><br>
+
+    <button type="submit">등록</button>
+</form>
+
+<p id="message"></p>
+</body>
+</html>

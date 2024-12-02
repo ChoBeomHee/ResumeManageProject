@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elasticsearch Search</title>
+</head>
+<body>
+<h1>Product Search</h1>
+<form id="searchForm">
+    <label for="keyword">Keyword:</label>
+    <input type="text" id="keyword" name="keyword" required>
+    <button type="submit">Search</button>
+</form>
+
+<h2>Results:</h2>
+<div id="results"></div>
+
+<script>
+    document.getElementById('searchForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const keyword = document.getElementById('keyword').value;
+
+        const response = await fetch(`/api/search_quary/${encodeURIComponent(keyword)}`);
+        const results = await response.json();
+
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // 결과 초기화
+
+        if (results.length > 0) {
+            results.forEach(result => {
+                const item = document.createElement('div');
+                item.innerHTML = `<strong>${result.title}</strong>: ${result.contents}`;
+                resultsDiv.appendChild(item);
+            });
+        } else {
+            resultsDiv.innerHTML = 'No results found.';
+        }
+    });
+</script>
+</body>
+</html>

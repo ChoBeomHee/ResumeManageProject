@@ -1,6 +1,5 @@
 package resume.backend.resume.Controller;
 
-import co.elastic.clients.elasticsearch.nodes.Http;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

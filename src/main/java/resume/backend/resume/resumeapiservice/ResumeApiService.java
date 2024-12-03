@@ -91,6 +91,15 @@ public class ResumeApiService {
         return "자소서 작성 완료 " + insertResumeDto.getCompanyName();
     }
 
+    public String deleteResume(int id){
+        Resume resume = this.resumeRepository.findById((long) id)
+                .orElseThrow(() -> new IllegalArgumentException("Resume not found with id: " + id));
+
+        this.resumeRepository.delete(resume);
+
+        return "삭제 성공";
+    }
+
     public List<String> selectCompany(Authentication userInfo){
         List<String> companyList = new ArrayList<>();
         List<Company> companies = this.companyRepository.findByUserName(userInfo.getName());
@@ -112,7 +121,7 @@ public class ResumeApiService {
 
         List<CompanyResumeDto> results = new ArrayList<>();
         for (Resume r : resumeList) {
-            results.add(new CompanyResumeDto(r.getTitle(), r.getContents()));
+            results.add(new CompanyResumeDto(r.getId(), r.getTitle(), r.getContents()));
         }
 
         return results;

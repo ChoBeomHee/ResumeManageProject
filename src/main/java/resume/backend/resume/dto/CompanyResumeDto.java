@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class CompanyResumeDto {
-    String title;
-    String contents;
+    private int id;
+    private String title;
+    private String contents;
 }

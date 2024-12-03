@@ -28,6 +28,10 @@ public class SearchService {
         return this.searchRepository.findByTitleContainingOrContentsContaining(keyword, keyword);
     }
 
+    public List<resume.backend.resume.domain.Resume> searchByKeywordQuery(String keyword){
+        return this.resumeRepository.findByTitleContainingOrContentsContaining(keyword, keyword);
+    }
+
     public List<String> autocompleteKeyword(String keyword){
         List<AutoComplete> list = this.autoRepository.findByTitleContaining(keyword);
         HashSet<String> res = new HashSet<>();

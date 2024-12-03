@@ -89,6 +89,11 @@ public class ResumeApiController {
         return ResponseEntity.status(HttpStatus.OK).body(resumeApiService.insertResume(insertResumeDto, authentication));
     }
 
+    @DeleteMapping("/resume/{id}")
+    private ResponseEntity<String> deleteResume(@PathVariable int id){
+        return ResponseEntity.status(HttpStatus.OK).body(this.resumeApiService.deleteResume(id));
+    }
+
     @PostMapping("/company")
     private ResponseEntity<String> createCompany(@RequestBody CreateCompanyDto createCompanyDto, Authentication authentication){
         return ResponseEntity.status(HttpStatus.OK).body(resumeApiService.createCompany(createCompanyDto, authentication));

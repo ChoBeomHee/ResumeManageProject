@@ -1,3 +1,98 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title>Elasticsearch Search</title>-->
+<!--    <style>-->
+<!--        /* 자동완성 결과 스타일 */-->
+<!--        #autocomplete-list {-->
+<!--            border: 1px solid #ddd;-->
+<!--            max-height: 200px;-->
+<!--            overflow-y: auto;-->
+<!--            position: absolute;-->
+<!--            background-color: white;-->
+<!--            width: 100%;-->
+<!--            z-index: 1;-->
+<!--        }-->
+<!--        #autocomplete-list div {-->
+<!--            padding: 10px;-->
+<!--            cursor: pointer;-->
+<!--        }-->
+<!--        #autocomplete-list div:hover {-->
+<!--            background-color: #f1f1f1;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>자소서 검색하기</h1>-->
+<!--<form id="searchForm">-->
+<!--    <label for="keyword">Keyword:</label>-->
+<!--    <input type="text" id="keyword" name="keyword" autocomplete="off" required>-->
+<!--    <button type="submit">Search</button>-->
+<!--</form>-->
+
+<!--<div id="autocomplete-list"></div> &lt;!&ndash; 자동완성 결과 영역 &ndash;&gt;-->
+<!--<h2>Results:</h2>-->
+<!--<div id="results"></div>-->
+
+<!--<script>-->
+<!--    document.getElementById('keyword').addEventListener('input', async function () {-->
+<!--        const keyword = document.getElementById('keyword').value;-->
+
+<!--        if (keyword.length < 2) { // 최소 입력 길이 조건-->
+<!--            document.getElementById('autocomplete-list').innerHTML = '';-->
+<!--            return;-->
+<!--        }-->
+
+<!--        // 자동완성 요청-->
+<!--        const response = await fetch(`/autocomplete/${encodeURIComponent(keyword)}`);-->
+<!--        const suggestions = await response.json();-->
+
+<!--        const autocompleteList = document.getElementById('autocomplete-list');-->
+<!--        autocompleteList.innerHTML = ''; // 이전 자동완성 목록 초기화-->
+
+<!--        if (suggestions.length > 0) {-->
+<!--            suggestions.forEach(suggestion => {-->
+<!--                const item = document.createElement('div');-->
+<!--                item.textContent = suggestion;-->
+<!--                item.addEventListener('click', function () {-->
+<!--                    document.getElementById('keyword').value = suggestion;-->
+<!--                    autocompleteList.innerHTML = ''; // 선택 시 목록 초기화-->
+<!--                });-->
+<!--                autocompleteList.appendChild(item);-->
+<!--            });-->
+<!--        } else {-->
+<!--            autocompleteList.innerHTML = '<div>No suggestions found.</div>';-->
+<!--        }-->
+<!--    });-->
+
+<!--    document.getElementById('searchForm').addEventListener('submit', async function (e) {-->
+<!--        e.preventDefault();-->
+<!--        const keyword = document.getElementById('keyword').value;-->
+
+<!--        const response = await fetch(`/search/${encodeURIComponent(keyword)}`);-->
+<!--        const results = await response.json();-->
+
+<!--        const resultsDiv = document.getElementById('results');-->
+<!--        resultsDiv.innerHTML = ''; // 결과 초기화-->
+
+
+<!--        if (results.length > 0) {-->
+<!--            results.forEach(result => {-->
+<!--                const item = document.createElement('div');-->
+<!--                item.innerHTML = `<strong>${result.title}</strong>: ${result.contents}`;-->
+<!--                resultsDiv.appendChild(item);-->
+<!--            });-->
+<!--        } else {-->
+<!--            resultsDiv.innerHTML = 'No results found.';-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,21 +100,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Elasticsearch Search</title>
     <style>
-        /* 자동완성 결과 스타일 */
-        #autocomplete-list {
-            border: 1px solid #ddd;
-            max-height: 200px;
-            overflow-y: auto;
-            position: absolute;
-            background-color: white;
-            width: 100%;
-            z-index: 1;
-        }
-        #autocomplete-list div {
+        /* 결과 스타일 */
+        #results div {
             padding: 10px;
-            cursor: pointer;
+            border: 1px solid #ddd;
+            margin-top: 5px;
         }
-        #autocomplete-list div:hover {
+        #results div:hover {
             background-color: #f1f1f1;
         }
     </style>
@@ -32,41 +119,40 @@
     <button type="submit">Search</button>
 </form>
 
-<div id="autocomplete-list"></div> <!-- 자동완성 결과 영역 -->
 <h2>Results:</h2>
 <div id="results"></div>
 
 <script>
+    // 검색어 입력 시마다 결과를 표시하는 함수
     document.getElementById('keyword').addEventListener('input', async function () {
         const keyword = document.getElementById('keyword').value;
 
-        if (keyword.length < 2) { // 최소 입력 길이 조건
-            document.getElementById('autocomplete-list').innerHTML = '';
+        // 최소 2자 이상 입력된 경우에만 검색을 실행
+        if (keyword.length < 2) {
+            document.getElementById('results').innerHTML = ''; // 결과 초기화
             return;
         }
 
-        // 자동완성 요청
-        const response = await fetch(`/autocomplete/${encodeURIComponent(keyword)}`);
-        const suggestions = await response.json();
+        // 검색 요청 (자동완성 기능 대신 바로 검색 결과 출력)
+        const response = await fetch(`/search/${encodeURIComponent(keyword)}`);
+        const results = await response.json();
 
-        const autocompleteList = document.getElementById('autocomplete-list');
-        autocompleteList.innerHTML = ''; // 이전 자동완성 목록 초기화
+        const resultsDiv = document.getElementById('results');
+        resultsDiv.innerHTML = ''; // 결과 초기화
 
-        if (suggestions.length > 0) {
-            suggestions.forEach(suggestion => {
+        // 결과가 있을 경우 화면에 표시
+        if (results.length > 0) {
+            results.forEach(result => {
                 const item = document.createElement('div');
-                item.textContent = suggestion;
-                item.addEventListener('click', function () {
-                    document.getElementById('keyword').value = suggestion;
-                    autocompleteList.innerHTML = ''; // 선택 시 목록 초기화
-                });
-                autocompleteList.appendChild(item);
+                item.innerHTML = `<strong>${result.title}</strong>: ${result.contents}`;
+                resultsDiv.appendChild(item);
             });
         } else {
-            autocompleteList.innerHTML = '<div>No suggestions found.</div>';
+            resultsDiv.innerHTML = 'No results found.';
         }
     });
 
+    // 폼 제출 시 검색 요청
     document.getElementById('searchForm').addEventListener('submit', async function (e) {
         e.preventDefault();
         const keyword = document.getElementById('keyword').value;
@@ -76,7 +162,6 @@
 
         const resultsDiv = document.getElementById('results');
         resultsDiv.innerHTML = ''; // 결과 초기화
-
 
         if (results.length > 0) {
             results.forEach(result => {

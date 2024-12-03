@@ -208,6 +208,39 @@
         }
     }
 
+    async function deleteResumeData(resumeId) {
+        // 확인창 띄우기
+        const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
+        if (!confirmDelete) {
+            return; // 사용자가 "아니오"를 선택하면 함수 종료
+        }
+
+        try {
+            const response = await fetch(`/api/resume/${resumeId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            });
+
+            if (response.ok) {
+                // 삭제된 항목을 화면에서 제거
+                const resumeElement = document.getElementById(`resume-${resumeId}`);
+                if (resumeElement) {
+                    resumeElement.remove(); // DOM에서 해당 요소 삭제
+                }
+            } else {
+                const result = await response.json().catch(() => ({})); // JSON 파싱 실패 방지
+                document.getElementById("message").textContent = result.message || "삭제 중 오류가 발생했습니다.";
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
+        }
+    }
+
+
+
     // 특정 회사 이름에 대해 이력서를 가져오는 함수
     async function fetchResumeData(companyName) {
         try {
@@ -241,6 +274,7 @@
             }
             data.forEach((resume, index) => {
                 const listItem = document.createElement('li');
+                listItem.id = `resume-${resume.id}`;
                 listItem.style.marginBottom = '20px';
                 listItem.style.padding = '10px';
                 listItem.style.border = '1px solid #ccc';
@@ -250,6 +284,9 @@
                 listItem.innerHTML = `
                 <h2>${index + 1}. ${resume.title}</h2>
                 <p>${resume.contents}</p>
+
+                <button type="submit">수정</button>
+                <button onclick="deleteResumeData(${resume.id})">삭제</button>
             `;
                 listContainer.appendChild(listItem);
             });

@@ -12,6 +12,14 @@
             return params.get("companyName");
         }
 
+        function updateCompanyNameInTitle() {
+            const companyName = getCompanyNameFromURL();
+            const titleElement = document.getElementById("companyNameTitle");
+            titleElement.textContent = `${companyName} 자소서 등록`; // 제목 업데이트
+        }
+
+        document.addEventListener("DOMContentLoaded", updateCompanyNameInTitle);
+
         // 새로운 폼을 추가하는 함수
         function addForm() {
             const container = document.getElementById("formsContainer");
@@ -70,14 +78,6 @@
                     },
                     body: JSON.stringify({ companyName, resumes })
                 });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    document.getElementById("message").textContent = "자소서가 성공적으로 등록되었습니다.";
-                } else {
-                    document.getElementById("message").textContent = result.message || "등록 중 오류가 발생했습니다.";
-                }
             } catch (error) {
                 console.error("Error:", error);
                 document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
@@ -86,10 +86,9 @@
     </script>
 </head>
 <body>
-<h1>자소서 등록</h1>
+<h1 id="companyNameTitle">자소서 등록</h1>
 <form onsubmit="submitForm(event)">
     <div id="formsContainer"></div> <!-- 동적으로 추가될 폼 컨테이너 -->
-
     <button type="button" onclick="addForm()">+ 항목 추가</button><br><br>
 
     <button type="submit">등록</button>

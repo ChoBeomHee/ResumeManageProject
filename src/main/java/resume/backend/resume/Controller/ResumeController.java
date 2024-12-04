@@ -18,4 +18,7 @@ public class ResumeController {
     private String search(){
         return "search";
     }
+
+    @GetMapping("/resumeUpdate")
+    private String update() {return "resumeUpdate"; }
 }

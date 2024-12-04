@@ -19,4 +19,9 @@ public class Resume {
     String title;
     @Column(columnDefinition = "TEXT")
     String contents;
+
+    public void updateResume(String title, String contents){
+        this.title = title;
+        this.contents = contents;
+    }
 }

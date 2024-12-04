@@ -1,13 +1,11 @@
 package resume.backend.resume.resumeapiservice;
 
+import jakarta.transaction.Transactional;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import resume.backend.resume.domain.Company;
 import resume.backend.resume.domain.Resume;
-import resume.backend.resume.dto.CreateCompanyDto;
-import resume.backend.resume.dto.InsertResumeDto;
-import resume.backend.resume.dto.CompanyResumeDto;
-import resume.backend.resume.dto.TitleAndContent;
+import resume.backend.resume.dto.*;
 import resume.backend.resume.repository.CompanyRepository;
 import resume.backend.resume.repository.ResumeRepository;
 import resume.backend.search.AutoComplete;
@@ -98,6 +96,21 @@ public class ResumeApiService {
         this.resumeRepository.delete(resume);
 
         return "삭제 성공";
+    }
+
+    @Transactional
+    public String updateResume(UpdateResumeDto updateResumeDto){
+        try {
+            for(IdAndTitleAndContent idAndTitleAndContent : updateResumeDto.getResumes()){
+                Resume resume = this.resumeRepository.findById((long) idAndTitleAndContent.getId()).orElseThrow(()-> new IllegalArgumentException("항목을 찾을 수 없습니다."));
+
+                resume.updateResume(idAndTitleAndContent.getTitle(), idAndTitleAndContent.getContent());
+            }
+        } catch (Exception e){
+            throw new IllegalArgumentException("수정 중 에러 발생");
+        }
+
+        return "수정 성공";
     }
 
     public List<String> selectCompany(Authentication userInfo){

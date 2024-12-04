@@ -149,7 +149,7 @@
 <div class="modal" id="addCompanyModal">
     <div class="modal-content">
         <div class="modal-header">회사 추가</div>
-        <input type="text" id="newCompanyName" placeholder="회사 이름 입력" style="width: 100%; padding: 10px;">
+        <label for="newCompanyName"></label><input type="text" id="newCompanyName" placeholder="회사 이름 입력" style="width: 100%; padding: 10px;"/>
         <div class="modal-footer">
             <button onclick="addCompany()">추가</button>
             <button onclick="closeModal()" style="margin-left: 10px; background-color: #ccc; color: black;">취소</button>
@@ -172,6 +172,7 @@
     // 회사 추가 (POST 요청)
     async function addCompany() {
         const companyName = document.getElementById('newCompanyName').value;
+
         if (!companyName) {
             alert('회사 이름을 입력하세요.');
             return;
@@ -239,16 +240,11 @@
         }
     }
 
-
-
     // 특정 회사 이름에 대해 이력서를 가져오는 함수
     async function fetchResumeData(companyName) {
         try {
             // API 요청
             const response = await fetch(`http://localhost:8080/api/resume/${companyName}`);
-            if (!response.ok) {
-                throw new Error('이력서를 불러오는 데 실패했습니다.');
-            }
 
             // JSON 데이터 가져오기 (리스트 형태)
             const data = await response.json(); // data는 [{ title, contents }, { title, contents }, ...] 형태
@@ -260,6 +256,11 @@
                     <form action="http://localhost:8080/resume" target="_blank" method="get">
                         <input type="hidden" name="companyName" value="${companyName}">
                         <button type="submit">문항 추가</button>
+                    </form>
+
+                    <form action="http://localhost:8080/resumeUpdate" target="_blank" method="get">
+                        <input type="hidden" name="companyName" value="${companyName}">
+                        <button type="submit">문항 수정</button>
                     </form>
                 </div>
             `;
@@ -284,8 +285,6 @@
                 listItem.innerHTML = `
                 <h2>${index + 1}. ${resume.title}</h2>
                 <p>${resume.contents}</p>
-
-                <button type="submit">수정</button>
                 <button onclick="deleteResumeData(${resume.id})">삭제</button>
             `;
                 listContainer.appendChild(listItem);

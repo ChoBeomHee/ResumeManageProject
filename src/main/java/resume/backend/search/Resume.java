@@ -19,9 +19,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Resume {
     @Id
     private String id;
-
     private int companyId;
-
     private String title;
 
     @Field(type = FieldType.Text)

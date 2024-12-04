@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>자소서 수정</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #message {
+            text-align: center;
+            margin-top: 20px;
+            color: red;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background: #ddd;
+            margin: 20px 0;
+        }
+    </style>
+    <script>
+        let index = 1;
+
+        function getCompanyNameFromURL() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("companyName");
+        }
+
+        function updateCompanyNameInTitle() {
+            const companyName = getCompanyNameFromURL();
+            const titleElement = document.getElementById("companyNameTitle");
+            if (companyName) {
+                titleElement.textContent = `${companyName} 자소서 수정`;
+            }
+        }
+
+        async function populateFormsFromAPI() {
+            const companyName = getCompanyNameFromURL();
+            if (!companyName) {
+                document.getElementById("message").textContent = "회사 이름이 URL에 없습니다. URL을 확인하세요.";
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/resume/${companyName}`);
+                if (!response.ok) throw new Error("HTTP error");
+                const data = await response.json();
+                for (const item of data) {
+                    addForm(item.id, item.title, item.contents);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                document.getElementById("message").textContent = "데이터를 가져오는 중 오류가 발생했습니다.";
+            }
+        }
+
+        function addForm(id = -1, title = '', content = '') {
+            const container = document.getElementById("formsContainer");
+            const formGroup = document.createElement("div");
+            formGroup.className = "form-group";
+            formGroup.innerHTML = `
+                <label>자소서 항목:</label>
+                <input type="hidden" name="id-${index}" value="${id}">
+                <input type="text" name="title-${index}" value="${title}" required>
+
+                <label>자소서 내용:</label>
+                <textarea name="contents-${index}" rows="4" required>${content}</textarea>
+                <hr>
+            `;
+            container.appendChild(formGroup);
+            index++;
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+
+            const companyName = getCompanyNameFromURL();
+            if (!companyName) {
+                document.getElementById("message").textContent = "회사 이름이 URL에 없습니다. URL을 확인하세요.";
+                return;
+            }
+
+            const formsContainer = document.getElementById("formsContainer");
+            const formGroups = formsContainer.querySelectorAll(".form-group");
+
+            const resumes = Array.from(formGroups).map((formGroup, i) => ({
+                id: formGroup.querySelector(`[name="id-${i + 1}"]`).value,
+                title: formGroup.querySelector(`[name="title-${i + 1}"]`).value,
+                content: formGroup.querySelector(`[name="contents-${i + 1}"]`).value
+            }));
+
+            try {
+                const response = await fetch('/api/resume', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ companyName, resumes })
+                });
+                if (!response.ok) throw new Error("HTTP error");
+                document.getElementById("message").textContent = "자소서가 성공적으로 등록되었습니다!";
+            } catch (error) {
+                console.error("Error:", error);
+                document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            updateCompanyNameInTitle();
+            await populateFormsFromAPI();
+        });
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1 id="companyNameTitle">자소서 수정</h1>
+    <form onsubmit="submitForm(event)">
+        <div id="formsContainer"></div>
+        <button type="submit">수정 완료</button>
+    </form>
+    <p id="message"></p>
+</div>
+</body>
+</html>

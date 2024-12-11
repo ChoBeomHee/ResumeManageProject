@@ -15,7 +15,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -35,6 +34,16 @@ jobs:
 
     - name: Build with Gradle Wrapper
       run: ./gradlew build
+
+      # scp 전송
+    - name: Install sshpass
+      run: sudo apt-get install -y sshpass
+    - name: Copy jar files using password authentication
+      env:
+        SSH_PASSWORD: ${{ secrets.SSHPASSWORD }}
+      run: |
+        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P 8080 build/libs/*.jar root@49.236.136.132:/home/jarFiles
+
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

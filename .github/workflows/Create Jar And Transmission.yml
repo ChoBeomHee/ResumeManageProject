@@ -50,7 +50,7 @@ jobs:
 
     - name: Copy jar files excluding plain version
       env:
-        SH_PASSWORD: ${{ secrets.SSHPASSWORD }}
+        SSH_PASSWORD: ${{ secrets.SSHPASSWORD }}
       run: |
         for jar in build/libs/*.jar; do
           if [[ ! "$jar" =~ -plain\.jar$ ]]; then

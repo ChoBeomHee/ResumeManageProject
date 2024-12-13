@@ -50,13 +50,13 @@ jobs:
 
     - name: Copy jar files excluding plain version
       env:
-          SH_PASSWORD: ${{ secrets.SSHPASSWORD }}
+        SH_PASSWORD: ${{ secrets.SSHPASSWORD }}
       run: |
-            for jar in build/libs/*.jar; do
-              if [[ ! "$jar" =~ -plain\.jar$ ]]; then
-                sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P 8080 "$jar" root@49.236.136.132:/home/jarFiles
-              fi
-            done
+        for jar in build/libs/*.jar; do
+          if [[ ! "$jar" =~ -plain\.jar$ ]]; then
+            sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P 8080 "$jar" root@49.236.136.132:/home/jarFiles
+          fi
+        done
 
       # 쉘스크립트 파일 실행
     - name: Execute shell script on remote server

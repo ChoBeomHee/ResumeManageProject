@@ -28,7 +28,7 @@ public class ResumeApiService {
     final private ResumeRepository resumeRepository;
     final private SearchRepository searchRepository;
 
-    public ResumeApiService(CompanyRepository companyRepository, ResumeRepository repository, AutoRepository autoRepository, UserRepository userRepository, ResumeRepository resumeRepository, SearchRepository searchRepository) {
+    public ResumeApiService(CompanyRepository companyRepository, AutoRepository autoRepository, UserRepository userRepository, ResumeRepository resumeRepository, SearchRepository searchRepository) {
         this.companyRepository = companyRepository;
         this.autoRepository = autoRepository;
         this.userRepository = userRepository;

@@ -25,11 +25,13 @@ public class KaKaoLoginController {
 
         //return new ResponseEntity<>("카카오 로그인 성공",HttpStatus.OK);
 
-        if(serverAddress.equals("127.0.0.1")){
-            return "redirect:http://localhost:8080/home";
-        }else{
-            return "redirect:http://115.85.183.243/home";
-        }
+//        if(serverAddress.equals("127.0.0.1")){
+//            return "redirect:http://localhost:8080/home";
+//        }else{
+//            return "redirect:http://115.85.183.243/home";
+//        }
+
+        return "redirect:http://115.85.183.243/home";
     }
 
     @GetMapping("/auth/loginPage")

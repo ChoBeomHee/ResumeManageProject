@@ -1,22 +1,22 @@
-
-
 spring:
   application:
     name: backend
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/%EC%9E%90%EC%86%8C%EC%84%9C%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?serverTimezone=Asia/Seoul
-    username: root
-    password: hee41876455
-  #    username: spring
-  #    password: hee6455
+#    url: jdbc:mysql://localhost:3306/%EC%9E%90%EC%86%8C%EC%84%9C%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8?serverTimezone=Asia/Seoul
+#    username: root
+#    password: hee41876455
+
+    url: jdbc:mysql://115.85.183.243:3306/resume?serverTimezone=Asia/Seoul
+    username: spring
+    password: hee6455
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQLDialect
     show-sql: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true

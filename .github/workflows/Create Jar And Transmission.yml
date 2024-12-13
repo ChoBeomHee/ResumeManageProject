@@ -44,15 +44,26 @@ jobs:
     - name: Build with Gradle Wrapper
       run: ./gradlew build
 
-      # scp 전송
+    # plain 버전 제외하고 JAR 파일 전송
     - name: Install sshpass
       run: sudo apt-get install -y sshpass
-    - name: Copy jar files using password authentication
-      env:
-        SSH_PASSWORD: ${{ secrets.SSHPASSWORD }}
-      run: |
-        sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P 8080 build/libs/*.jar root@49.236.136.132:/home/jarFiles
 
+    - name: Copy jar files excluding plain version
+      env:
+          SH_PASSWORD: ${{ secrets.SSHPASSWORD }}
+      run: |
+            for jar in build/libs/*.jar; do
+              if [[ ! "$jar" =~ -plain\.jar$ ]]; then
+                sshpass -p "$SSH_PASSWORD" scp -o StrictHostKeyChecking=no -P 8080 "$jar" root@49.236.136.132:/home/jarFiles
+              fi
+            done
+
+      # 쉘스크립트 파일 실행
+    - name: Execute shell script on remote server
+      env:
+          SSH_PASSWORD: ${{ secrets.SSHPASSWORD }}
+      run: |
+          sshpass -p "$SSH_PASSWORD" ssh -o StrictHostKeyChecking=no -p 8080 root@49.236.136.132 'bash /home/shellScript/deploy.sh'
 
     # NOTE: The Gradle Wrapper is the default and recommended way to run Gradle (https://docs.gradle.org/current/userguide/gradle_wrapper.html).
     # If your project does not have the Gradle Wrapper configured, you can use the following configuration to run Gradle with a specified version.

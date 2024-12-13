@@ -14,8 +14,6 @@ import java.util.Random;
 @RequestMapping("/api")
 public class ResumeApiController {
     final private ResumeApiService resumeApiService;
-    private static final Random RANDOM = new Random();
-
     public ResumeApiController(ResumeApiService resumeApiService) {
         this.resumeApiService = resumeApiService;
     }

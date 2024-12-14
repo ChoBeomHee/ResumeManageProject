@@ -41,6 +41,8 @@ public class LoginService {
     }
 
     public String requestKakaoToken(String code) throws ParseException {
+        System.out.println("Log1");
+
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "9fe6e0ee364495b0f1ec8dd4da3260d5");

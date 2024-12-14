@@ -44,7 +44,7 @@ public class LoginService {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "9fe6e0ee364495b0f1ec8dd4da3260d5");
-        params.add("redirect_uri", "http://115.85.183.243:8080/auth/kakao/callback");
+        params.add("redirect_uri", "http://115.85.183.243/auth/kakao/callback");
         params.add("code", code);
         
         ResponseEntity<Map> response = restClient.post()

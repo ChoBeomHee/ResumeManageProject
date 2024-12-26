@@ -9,8 +9,8 @@ import resume.backend.user.service.LoginService;
 
 @Controller
 public class KaKaoLoginController {
-    @Value("${server.address}")
-    private String serverAddress;
+    @Value("${custom.prefix}")
+    private String prefix;
     final LoginService loginService;
 
     public KaKaoLoginController(LoginService loginService) {
@@ -31,7 +31,7 @@ public class KaKaoLoginController {
 //            return "redirect:http://115.85.183.243/home";
 //        }
 
-        return "redirect:http://115.85.183.243/home";
+        return "redirect:http://" + prefix + "/home";
     }
 
     @GetMapping("/auth/loginPage")

@@ -22,3 +22,6 @@ spring:
         format_sql: true
 server:
   address: 127.0.0.1
+
+custom:
+  prefix: "localhost:8080"

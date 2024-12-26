@@ -125,10 +125,13 @@
 </head>
 <body>
 
+<p>Prefix Value: <span th:text="${prefix}"></span></p>
+
+
 <!-- 왼쪽 사이드바 -->
 <div class="sidebar">
-    <form action="http://localhost:8080/searchPage" target="_blank" method="get">
-        <button type="submit">검색하기</button>
+    <form th:action="'http://' + ${prefix} + '/searchPage'" target="_blank" method="get">
+        <button type="submit">Search</button>
     </form>
 
     <div>
@@ -180,7 +183,8 @@
 
         try {
             // API 요청
-            const response = await fetch('http://localhost:8080/api/company', {
+
+            const response = await fetch('http://' + ${prefix} + '/api/company', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -217,7 +221,7 @@
         }
 
         try {
-            const response = await fetch(`/api/resume/${resumeId}`, {
+            const response = await fetch('http://' + ${prefix} + '/api/resume/' + resumeId, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json'
@@ -244,7 +248,7 @@
     async function fetchResumeData(companyName) {
         try {
             // API 요청
-            const response = await fetch(`http://localhost:8080/api/resume/${companyName}`);
+            const response = await fetch('http://' + ${prefix} + '/api/resume/' + companyName);
 
             // JSON 데이터 가져오기 (리스트 형태)
             const data = await response.json(); // data는 [{ title, contents }, { title, contents }, ...] 형태
@@ -253,12 +257,12 @@
             contentArea.innerHTML = `
                 <div>
                     <h1>${companyName} 자기소개서</h1>
-                    <form action="http://localhost:8080/resume" target="_blank" method="get">
+                    <form action="http://' + ${prefix} + '/resume" target="_blank" method="get">
                         <input type="hidden" name="companyName" value="${companyName}">
                         <button type="submit">문항 추가</button>
                     </form>
 
-                    <form action="http://localhost:8080/resumeUpdate" target="_blank" method="get">
+                    <form action="http://' + ${prefix} + '/resumeUpdate" target="_blank" method="get">
                         <input type="hidden" name="companyName" value="${companyName}">
                         <button type="submit">문항 수정</button>
                     </form>
@@ -301,7 +305,7 @@
     // API에서 회사 목록을 가져오는 함수
     async function fetchCompanyList() {
         try {
-            const response = await fetch('http://localhost:8080/api/company');
+            const response = await fetch('http://' + ${prefix} + '/api/company');
             const data = await response.json();
 
             const companyListElement = document.getElementById('companyList');
@@ -321,6 +325,11 @@
 
     // 페이지 로드 시 회사 목록 가져오기
     window.onload = fetchCompanyList;
+
+    // window.onload = function() {
+    //     console.log(prefixValue);  // 콘솔에 출력
+    //     fetchCompanyList();  // 기존 기능을 유지하여 회사 목록도 불러오기
+    // };
 </script>
 
 </body>

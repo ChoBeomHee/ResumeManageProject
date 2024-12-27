@@ -18,7 +18,6 @@ spring:
         format_sql: true
 server:
   port: 8080
-  address: 115.85.183.243
 
 custom:
   prefix: "115.85.183.243"

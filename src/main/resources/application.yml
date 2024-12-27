@@ -24,4 +24,4 @@ server:
   address: 127.0.0.1
 
 custom:
-  prefix: "localhost:8080"
+  prefix: "115.85.183.243"

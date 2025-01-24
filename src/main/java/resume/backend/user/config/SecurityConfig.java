@@ -45,4 +45,16 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//        http.httpBasic(AbstractHttpConfigurer::disable)
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .userDetailsService(userDetailService)
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll() // 모든 요청 허용
+//                );
+//
+//        return http.build();
+//    }
 }

@@ -1,337 +1,215 @@
+<!--${prefix}-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company List</title>
+    <title>Left Sidebar Layout</title>
     <style>
-        /* 기존 스타일 유지 */
-        body {
-            font-family: Arial, sans-serif;
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            height: 100vh;
+            box-sizing: border-box;
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+        }
+
+        /* 사이드바 스타일 */
         .sidebar {
             width: 250px;
-            background-color: #333;
+            height: 100vh;
+            background-color: #2c3e50;
             color: white;
             padding: 20px;
             position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-        }
-
-        .sidebar h2 {
-            margin-top: 0;
-            font-size: 24px;
-            text-align: center;
-        }
-
-        .company-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .company-list li {
-            padding: 10px;
-            border-bottom: 1px solid #444;
-        }
-
-        .company-list li a {
-            color: white;
-            text-decoration: none;
-            font-size: 18px;
-            display: block;
-        }
-
-        .company-list li a:hover {
-            background-color: #575757;
-        }
-
-        .content {
-            margin-left: 300px;
-            padding: 20px;
-            flex-grow: 1;
-            background-color: #f4f4f4;
             overflow-y: auto;
         }
 
-        .write-resume-btn {
-            display: inline-block;
+        .sidebar h2 {
             margin-bottom: 20px;
-            padding: 10px 20px;
-            background-color: #007bff;
+            font-size: 24px;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar ul li {
+            margin: 10px 0;
+        }
+
+        .sidebar ul li a {
             color: white;
             text-decoration: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
+            font-size: 18px;
         }
 
-        .write-resume-btn:hover {
-            background-color: #0056b3;
+        .sidebar ul li a:hover {
+            text-decoration: underline;
         }
 
-        /* 모달 창 스타일 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 10% auto;
+        /* 메인 콘텐츠 스타일 */
+        .main-content {
+            margin-left: 250px; /* 사이드바의 너비만큼 여백 추가 */
             padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: calc(100% - 250px); /* 사이드바 제외한 너비 */
         }
 
-        .modal-header {
-            font-size: 20px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .modal-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .modal-footer button {
+        .open-modal-btn {
+            margin: 20px;
             padding: 10px 20px;
-            background-color: #007bff;
+            font-size: 16px;
+            background-color: #3498db;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .modal-footer button:hover {
-            background-color: #0056b3;
+        .open-modal-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* 모달 배경 */
+        .modal-overlay {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 모달 창 */
+        .modal {
+            background: white;
+            width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        /* 닫기 버튼 */
+        .close-modal-btn {
+            display: inline-block;
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-company {
+            display: inline-block;
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .close-modal-btn:hover {
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
-
-<p>Prefix Value: <span th:text="${prefix}"></span></p>
-
-
 <!-- 왼쪽 사이드바 -->
-<div class="sidebar">
-    <form th:action="'http://' + ${prefix} + '/searchPage'" target="_blank" method="get">
-        <button type="submit">Search</button>
-    </form>
 
-    <div>
-        <h2>지원 회사 목록</h2>
-        <button class="add-button" onclick="openModal()">+</button>
+
+<div class="sidebar">
+    <h2>지원 회사</h2>
+    <button class="open-modal-btn" onclick="openModal()">회사 추가</button>
+    <!-- 모달 창 -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal">
+            <div class="modal-body">
+                <p style="color: black;">회사를 추가하기 위한 내용을 입력하세요.</p>
+                <label>
+                    <input id="companyNameInput" type="text" placeholder="회사명"
+                           style="width: 100%; padding: 10px; margin-bottom: 10px;">
+                </label>
+            </div>
+            <button class="add-company" onclick="addCompany()">추가</button>
+            <button class="close-modal-btn" onclick="closeModal()">닫기</button>
+        </div>
     </div>
-    <ul class="company-list" id="companyList">
+    <ul>
+
     </ul>
 </div>
 
-<!-- 오른쪽 콘텐츠 영역 -->
-<div class="content" id="contentArea">
-    <h1>환영합니다!</h1>
-    <p>여기에 회사 목록에 대한 추가 정보를 표시할 수 있습니다.</p>
-</div>
-
-<!-- 회사 추가 모달 -->
-<div class="modal" id="addCompanyModal">
-    <div class="modal-content">
-        <div class="modal-header">회사 추가</div>
-        <label for="newCompanyName"></label><input type="text" id="newCompanyName" placeholder="회사 이름 입력" style="width: 100%; padding: 10px;"/>
-        <div class="modal-footer">
-            <button onclick="addCompany()">추가</button>
-            <button onclick="closeModal()" style="margin-left: 10px; background-color: #ccc; color: black;">취소</button>
-        </div>
-    </div>
+<!-- 메인 콘텐츠 -->
+<div class="main-content">
+    <h1>Welcome to the Main Content</h1>
+    <p>This is where the main content goes. You can add any content here.</p>
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse eget eros a erat facilisis tincidunt.</p>
 </div>
 
 <script>
     // 모달 열기
     function openModal() {
-        document.getElementById('addCompanyModal').style.display = 'block';
+        document.getElementById('modalOverlay').style.display = 'flex';
     }
 
     // 모달 닫기
     function closeModal() {
-        document.getElementById('addCompanyModal').style.display = 'none';
+        document.getElementById('modalOverlay').style.display = 'none';
     }
 
-    // 회사 추가
-    // 회사 추가 (POST 요청)
-    async function addCompany() {
-        const companyName = document.getElementById('newCompanyName').value;
+    function addCompany() {
+        const companyName = document.getElementById('companyNameInput').value;
 
-        if (!companyName) {
-            alert('회사 이름을 입력하세요.');
-            return;
-        }
+        const requestData = {
+            name: companyName
+        };
 
-        try {
-            // API 요청
-
-            const response = await fetch('http://' + ${prefix} + '/api/company', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ name: companyName })
-            });
-
-            if (response.ok) {
-                // 회사 목록에 추가
-                const companyListElement = document.getElementById('companyList');
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = '#';
-                a.textContent = companyName;
-                a.addEventListener('click', () => fetchResumeData(companyName));
-                li.appendChild(a);
-                companyListElement.appendChild(li);
-
-                closeModal(); // 모달 닫기
-                document.getElementById('newCompanyName').value = ''; // 입력 필드 초기화
-            } else {
-                alert('회사를 추가하는 데 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('회사를 추가하는 중 오류가 발생했습니다:', error);
-        }
-    }
-
-    async function deleteResumeData(resumeId) {
-        // 확인창 띄우기
-        const confirmDelete = window.confirm("정말로 삭제하시겠습니까?");
-        if (!confirmDelete) {
-            return; // 사용자가 "아니오"를 선택하면 함수 종료
-        }
-
-        try {
-            const response = await fetch('http://' + ${prefix} + '/api/resume/' + resumeId, {
-                method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            });
-
-            if (response.ok) {
-                // 삭제된 항목을 화면에서 제거
-                const resumeElement = document.getElementById(`resume-${resumeId}`);
-                if (resumeElement) {
-                    resumeElement.remove(); // DOM에서 해당 요소 삭제
+        // POST 요청 보내기
+        fetch('/api/company', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // JSON 데이터임을 명시
+            },
+            body: JSON.stringify(requestData), // 데이터를 JSON 문자열로 변환
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('네트워크 응답에 문제가 있습니다.');
                 }
-            } else {
-                const result = await response.json().catch(() => ({})); // JSON 파싱 실패 방지
-                document.getElementById("message").textContent = result.message || "삭제 중 오류가 발생했습니다.";
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("message").textContent = "서버 오류가 발생했습니다.";
-        }
-    }
-
-    // 특정 회사 이름에 대해 이력서를 가져오는 함수
-    async function fetchResumeData(companyName) {
-        try {
-            // API 요청
-            const response = await fetch('http://' + ${prefix} + '/api/resume/' + companyName);
-
-            // JSON 데이터 가져오기 (리스트 형태)
-            const data = await response.json(); // data는 [{ title, contents }, { title, contents }, ...] 형태
-            // 콘텐츠 영역 업데이트
-            const contentArea = document.getElementById('contentArea');
-            contentArea.innerHTML = `
-                <div>
-                    <h1>${companyName} 자기소개서</h1>
-                    <form action="http://' + ${prefix} + '/resume" target="_blank" method="get">
-                        <input type="hidden" name="companyName" value="${companyName}">
-                        <button type="submit">문항 추가</button>
-                    </form>
-
-                    <form action="http://' + ${prefix} + '/resumeUpdate" target="_blank" method="get">
-                        <input type="hidden" name="companyName" value="${companyName}">
-                        <button type="submit">문항 수정</button>
-                    </form>
-                </div>
-            `;
-
-            // 이력서 리스트 생성
-            const listContainer = document.createElement('ul');
-            listContainer.style.listStyleType = 'none';
-            listContainer.style.padding = '0';
-            if (data.length === 0) {
-                contentArea.innerHTML += `<p style="color: gray; font-size: 18px;">자소서 정보 없음</p>`;
-                return;
-            }
-            data.forEach((resume, index) => {
-                const listItem = document.createElement('li');
-                listItem.id = `resume-${resume.id}`;
-                listItem.style.marginBottom = '20px';
-                listItem.style.padding = '10px';
-                listItem.style.border = '1px solid #ccc';
-                listItem.style.borderRadius = '5px';
-                listItem.style.backgroundColor = '#fff';
-
-                listItem.innerHTML = `
-                <h2>${index + 1}. ${resume.title}</h2>
-                <p>${resume.contents}</p>
-                <button onclick="deleteResumeData(${resume.id})">삭제</button>
-            `;
-                listContainer.appendChild(listItem);
+                return response.json(); // 서버에서 반환된 JSON 데이터를 파싱
+            })
+            .then(data => {
+                console.log("서버 응답:", data); // 성공적으로 응답받은 데이터를 처리
+                alert("회사 추가 완료!");
+                closeModal(); // 모달 닫기
+            })
+            .catch(error => {
+                console.error("에러 발생:", error);
+                alert("회사 추가에 실패했습니다.");
             });
-
-            // 콘텐츠 영역에 리스트 추가
-            contentArea.appendChild(listContainer);
-        } catch (error) {
-            console.error('이력서를 불러오는 중 오류가 발생했습니다:', error);
-            alert('이력서를 불러오는 중 문제가 발생했습니다. 다시 시도해주세요.');
-        }
     }
-
-    // API에서 회사 목록을 가져오는 함수
-    async function fetchCompanyList() {
-        try {
-            const response = await fetch('http://' + ${prefix} + '/api/company');
-            const data = await response.json();
-
-            const companyListElement = document.getElementById('companyList');
-            data.forEach(company => {
-                const li = document.createElement('li');
-                const a = document.createElement('a');
-                a.href = '#';
-                a.textContent = company;
-                a.addEventListener('click', () => fetchResumeData(company));
-                li.appendChild(a);
-                companyListElement.appendChild(li);
-            });
-        } catch (error) {
-            console.error('회사를 불러오는 중에 오류가 발생했습니다:', error);
-        }
-    }
-
-    // 페이지 로드 시 회사 목록 가져오기
-    window.onload = fetchCompanyList;
-    window.openModal = openModal;
-
-    // window.onload = function() {
-    //     console.log(prefixValue);  // 콘솔에 출력
-    //     fetchCompanyList();  // 기존 기능을 유지하여 회사 목록도 불러오기
-    // };
 </script>
-
 </body>
 </html>
